@@ -17,21 +17,9 @@ reservation_routes = Blueprint('reservation_routes', __name__)
 def get_reservations():
     try:
         reservations = db_get_reservations()
-
-        # Construct response object with guest, room, and reservation details
-        response_list = []
-        for reservation in reservations:
-            # Make a request to the guest service to get guest information
-            guest_response = requests.get(f'{GUEST_SERVICE_URL}/api/v1/guests/{reservation["guest_id"]}')
-            guest_information = guest_response.json()
-            
-            # Make a request to the room inventory service to get room information
-            room_response = requests.get(f'{ROOM_INVENTORY_SERVICE_URL}/api/v1/rooms/{reservation["room_id"]}')
-            room_information = room_response.json()
-            
-            # Construct response object and append to response list
-            response = _format_reservation_response(reservation, guest_information, room_information)
-            response_list.append(response)
+        
+        # Get guest and room details for each reservation with helper function and list comprehension
+        response_list = [ _get_reservation_with_details(reservation) for reservation in reservations ]
 
         return jsonify(response_list), 200 if response_list else 404
     except Exception as e:
@@ -42,18 +30,7 @@ def get_reservations():
 def get_reservation(reservation_id):
     try:
         reservation = db_get_reservation(reservation_id)
-
-        # Make a request to the guest service to get guest 
-        guest_response = requests.get(f'{GUEST_SERVICE_URL}/api/v1/guests/{reservation["guest_id"]}')
-        guest_information = guest_response.json()
-
-        # Make a request to the room inventory service to get room information
-        room_response = requests.get(f'{ROOM_INVENTORY_SERVICE_URL}/api/v1/rooms/{reservation["room_id"]}')
-        room_information = room_response.json()
-
-        # Construct response object with reservation, guest, and room information
-        response = _format_reservation_response(reservation, guest_information, room_information)
-
+        response = _get_reservation_with_details(reservation)
         return jsonify(response), 200 if response else 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -76,6 +53,26 @@ def new_reservation():
 
 
 # ------------------------------ Helper Functions ------------------------------ #
+
+# Helper function to get guest and room details for all reservations
+def _get_reservation_with_details(reservation):
+    # Get guest information
+    guest_response = requests.get(
+        f'{GUEST_SERVICE_URL}/api/v1/guests/{reservation["guest_id"]}'
+    )
+    guest_information = guest_response.json()
+    
+    # Get room information
+    room_response = requests.get(
+        f'{ROOM_INVENTORY_SERVICE_URL}/api/v1/rooms/{reservation["room_id"]}'
+    )
+    room_information = room_response.json()
+    
+    return _format_reservation_response(
+        reservation, 
+        guest_information, 
+        room_information
+    )
 
 # Helper function to format reservation response
 def _format_reservation_response(reservation, guest_info, room_info):

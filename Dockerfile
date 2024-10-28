@@ -10,8 +10,8 @@ WORKDIR /app
 # Installer alle dependencies
 RUN pip install -r requirements.txt
 
-# Make port 5002 available to the world outside this container
-EXPOSE 5002
+# Make port 5003 available to the world outside this container
+EXPOSE 5003
 
 # Eksekver denne kommando når Containeren køres
 CMD ["python", "app.py"]

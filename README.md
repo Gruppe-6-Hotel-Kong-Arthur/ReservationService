@@ -25,16 +25,16 @@ The Reservation Service is a critical part of the Hotel Kong Arthur management s
 ```bash
 ReservationService/
 ├── api/                                         # API routes for reservations
-│   ├── reservation_routes.py                    # Contains all reservation-related routes
-├── app.py                                       # Main application entry point
-├── csv/                                         # Initial data for reservations
-│   └── international_names_with_rooms_1000.csv # CSV file containing sample data
+│   └── reservation_routes.py                    # 
+├── csv/                                         
+│   └── international_names_with_rooms_1000.csv  # CSV file containing sample data
 ├── database/                                    # Database connection and initialization scripts
 │   ├── connection.py                            
 │   ├── initialization.py                        
 │   └── reservation_inventory.db                 # SQLite database for reservations
 ├── repositories/                                # Data access layer for reservation operations
 │   └── reservation_repository.py                
+├── app.py                                       # Main application entry point
 ├── Dockerfile                                   # Docker configuration file
 ├── requirements.txt                             # Python dependencies
 └── README.md                                    # Project documentation
@@ -61,7 +61,6 @@ erDiagram
 | GET    | /api/v1/reservations          | Get all reservations                                 | N/A                                   | `[{"id": 1, "guest_id": 1, "room_id": 1, ...}]`                  | 404: `{"error": "No reservations found"}` |
 | GET    | /api/v1/reservations/{id}     | Get reservation by ID                               | N/A                                   | `{"id": 1, "guest_id": 1, "room_id": 1, ...}`                     | 404: `{"error": "Reservation not found"}` |
 | POST   | /api/v1/reservations/new      | Create a new reservation                             | `{"guest_id": 1, "room_id": 1, ...}`| `{"message": "Reservation made successfully"}`                     | 400: `{"error": "Missing required fields"}` |
-| GET    | /api/v1/reservations/{id}/details | Get reservation details with guest and room info | N/A                                   | `{"reservation_id": 1, "guest": {...}, "room": {...}, "reservation_details": {...}}` | 404: `{"error": "Reservation not found"}` |
 
 ---
 
@@ -75,10 +74,13 @@ erDiagram
 ## Installation
 
 ### Local Development Setup
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 python3 app.py
+```
+
 
 ### Docker Setup
 ```bash

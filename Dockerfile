@@ -1,17 +1,17 @@
-# Base image
+# Use Python 3.11 slim as the base image
 FROM python:3.11-slim
 
-# Copy alle filer i den mappe hvor min Dockerfile er til /app mappen i mit image
+# Copy all files from the directory
 COPY . /app
 
-# Skift til mappen /app (svarer til CD kommandoen)
+# Change the working directory to /app (similar to the 'cd' command in a terminal)
 WORKDIR /app
 
-# Installer alle dependencies
+# Install all dependencies listed in the requirements.txt file
 RUN pip install -r requirements.txt
 
-# Make port 5003 available to the world outside this container
+# Make port 5003 available for connections from outside the container
 EXPOSE 5003
 
-# Eksekver denne kommando når Containeren køres
+# Run this command when the container starts
 CMD ["python", "app.py"]

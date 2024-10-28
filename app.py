@@ -4,7 +4,7 @@ from database.initialization import init_db
 app = Flask(__name__)
 
 # Register blueprints for modular endpoints
-# app.register_blueprint(..., url_prefix='/api/v1/...')
+app.register_blueprint('reservations', url_prefix='/api/v1/reservations')
 
 # Error handler for 404 Not Found
 @app.errorhandler(404)
@@ -16,7 +16,7 @@ def not_found(error):
 def internal_error(error):
     return jsonify({"error": "Internal server error"}), 500
 
-# Initializes database and runs Flask app on port 5002
+# Initializes database and runs Flask app on port 5003
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5003, debug=True)

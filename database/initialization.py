@@ -17,8 +17,21 @@ def _create_tables():
     connection = create_connection()
     cursor = connection.cursor()
 
-    # cursor.execute(''' database here ''')
+    # SQLite database reservations table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Reservations (
+        id INTEGER PRIMARY KEY,
+        guest_id INTEGER NOT NULL,
+        room_id INTEGER NOT NULL,
+        season_id INTEGER NOT NULL,
+        start_date TEXT NOT NULL CHECK (start_date >= CURRENT_DATE),
+        end_date TEXT NOT NULL CHECK (end_date >= start_date),
+        price REAL NOT NULL CHECK (price >= 0),
+    )''')
+
+    # Create SQLite indexes for Reservations table
+    cursor.execute(''' CREATE INDEX IF NOT EXISTS guest_id_index ON Reservations (guest_id) ''')
+    cursor.execute(''' CREATE INDEX IF NOT EXISTS room_id_index ON Reservations (room_id) ''')
 
     connection.commit()
     connection.close()
-    pass

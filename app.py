@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from database import init_db
 
 app = Flask(__name__)
 
@@ -17,5 +18,5 @@ def internal_error(error):
 
 # Initializes database and runs Flask app on port 5002
 if __name__ == '__main__':
-    # init_db()
+    init_db()
     app.run(host='0.0.0.0', port=5003, debug=True)

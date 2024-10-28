@@ -43,11 +43,19 @@ def get_reservation(reservation_id):
     try:
         reservation = db_get_reservation(reservation_id)
 
+        print(f'Reservation: {reservation}')
+
         # Make a request to the guest service to get guest 
-        guest_information = requests.get(f'{GUEST_SERVICE_URL}/api/v1/guests/{reservation["guest_id"]}')
+        guest_response = requests.get(f'{GUEST_SERVICE_URL}/api/v1/guests/{reservation["guest_id"]}')
+        guest_information = guest_response.json()
+
+        print(f'Guest Information: {guest_information}')
 
         # Make a request to the room inventory service to get room information
-        room_information = requests.get(f'{ROOM_INVENTORY_SERVICE_URL}/api/v1/rooms/{reservation["room_id"]}')
+        room_response = requests.get(f'{ROOM_INVENTORY_SERVICE_URL}/api/v1/rooms/{reservation["room_id"]}')
+        room_information = room_response.json()
+
+        print(f'Room Information: {room_information}')
 
         response = {
             "reservation_id": reservation_id,
@@ -55,9 +63,11 @@ def get_reservation(reservation_id):
             "last_name": guest_information["last_name"],
             "country": guest_information["country"],
             "room_id": reservation["room_id"],
-            "room_type": room_information["room_type"],
-            "price": room_information["price"]
+            "room_type": room_information["type_name"],
+            "price": reservation["price"]
         }
+
+        print(f'Response: {response}')
 
         return jsonify(response), 200 if response else 404
     except Exception as e:

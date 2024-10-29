@@ -10,7 +10,7 @@ GUEST_SERVICE_URL = os.getenv('GUEST_SERVICE_URL')
 ROOM_INVENTORY_SERVICE_URL = os.getenv('ROOM_INVENTORY_SERVICE_URL')
 
 # Blueprint for reservation routes
-reservation_routes = Blueprint('reservation_routes', __name__)
+reservation_routes = Blueprint('reservations', __name__)
 
 # GET all reservations with guest and room details
 @reservation_routes.route('', methods=['GET'])

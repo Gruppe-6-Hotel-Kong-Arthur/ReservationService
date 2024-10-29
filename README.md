@@ -81,13 +81,13 @@ pip install -r requirements.txt
 python3 app.py
 ```
 
-
 ### Docker Setup
 ```bash
-docker build -t guest_service .
-docker build -t room_inventory_service .
-docker build -t reservation_service .
+docker build -t guest_service . && docker image prune -f
+docker build -t room_inventory_service . && docker image prune -f
+docker build -t reservation_service . && docker image prune -f
 ```
+
 ```bash
 # Run guest_service
 docker run -d \

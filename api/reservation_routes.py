@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 import os, requests
+# import
 from repositories.reservation_repository import (
     db_get_reservations, 
     db_get_reservation,
@@ -39,18 +40,19 @@ def get_reservation(reservation_id):
 @reservation_routes.route('/new', methods=['POST'])
 def new_reservation():
     try:
-        data = request.json()
+        data = request.get_json()
         guest_id = data.get('guest_id')
         room_id = data.get('room_id')
         season_id = data.get('season_id')
         start_date = data.get('start_date')
         end_date = data.get('end_date')
+        price = data.get('price')
 
-        if not guest_id or not room_id or not season_id or not start_date or not end_date:
+        if not guest_id or not room_id or not season_id or not start_date or not end_date or not price:
             return jsonify({"error": "Missing required fields"}), 400
 
         # make reservation
-        db_make_reservation(guest_id, room_id, season_id, start_date, end_date)
+        db_make_reservation(guest_id, room_id, season_id, start_date, end_date, price)
         return jsonify({"message": "Reservation made successfully"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500

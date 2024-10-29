@@ -36,12 +36,12 @@ def db_get_reservation(reservation_id):
     return dict(reservation) if reservation else None
 
 # Make a reservation 
-def db_make_reservation(guest_id, room_id, season_id, start_date, end_date):
+def db_make_reservation(guest_id, room_id, season_id, start_date, end_date, price):
     connection = create_connection()
 
     cursor = connection.cursor()
-    cursor.execute('INSERT INTO Reservations (guest_id, room_id, season_id, start_date, end_date) VALUES (?, ?, ?, ?, ?)',
-                    (guest_id, room_id, season_id, start_date, end_date))
+    cursor.execute('INSERT INTO Reservations (guest_id, room_id, season_id, start_date, end_date, price) VALUES (?, ?, ?, ?, ?, ?)',
+                    (guest_id, room_id, season_id, start_date, end_date, price))
 
     connection.commit()
     connection.close()

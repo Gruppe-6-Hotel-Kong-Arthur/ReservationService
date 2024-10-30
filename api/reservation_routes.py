@@ -105,6 +105,7 @@ def _format_reservation_response(reservation, guest_info, room_info):
             "end_date": reservation.get("end_date"),
             "price": reservation.get("price"),
             "days_rented": int(reservation.get("days_rented")), # Convert to integer
+            "season": reservation.get("season"),
         }
     }
     except Exception as e:

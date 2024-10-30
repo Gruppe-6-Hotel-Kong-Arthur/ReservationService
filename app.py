@@ -15,7 +15,7 @@ def not_found(error):
 # Error handler for 500 Internal Server Error
 @app.errorhandler(500)
 def internal_error(error):
-    return jsonify({"error": "Internal server error"}), 500
+    return jsonify({"error": error}), 500
 
 # Initializes database and runs Flask app on port 5003
 if __name__ == '__main__':

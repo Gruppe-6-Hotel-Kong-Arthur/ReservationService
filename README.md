@@ -88,6 +88,16 @@ docker build -t room_inventory_service . && docker image prune -f
 docker build -t reservation_service . && docker image prune -f
 ```
 
+docker build -t reservation_service . && docker image prune -f
+docker rm -f reservation_service && docker run -d \
+  -p 5003:5003 \
+  -e GUEST_SERVICE_URL=http://guest_service:5001 \
+  -e ROOM_INVENTORY_SERVICE_URL=http://room_inventory_service:5002 \
+  --name reservation_service \
+  --network microservice-network \
+  reservation_service
+
+
 ```bash
 # Run guest_service
 docker run -d \

@@ -30,8 +30,8 @@ def _create_tables():
         guest_id INTEGER NOT NULL,
         room_id INTEGER NOT NULL,
         season_id INTEGER NOT NULL,
-        start_date TEXT NOT NULL CHECK (start_date >= CURRENT_DATE),
-        end_date TEXT NOT NULL CHECK (end_date >= start_date),
+        start_date DATE NOT NULL,
+        end_date DATE NOT NULL,
         price REAL NOT NULL CHECK (price >= 0)
     )''')
     

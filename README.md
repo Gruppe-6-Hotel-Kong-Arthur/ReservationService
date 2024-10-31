@@ -6,41 +6,41 @@
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
-![Tableau](https://img.shields.io/badge/Tableau-E97627?style=for-the-badge&logo=tableau&logoColor=white)
 
 ## Overview
 
-The Reservation Service is a critical part of the Hotel Kong Arthur management system, responsible for handling all aspects related to room reservations. This microservice is built using Flask and SQLite, providing a robust API for managing guest reservations, including creation, retrieval, and data management. The service communicates with other microservices such as the Room Inventory Service and Guest Service, ensuring seamless integration and functionality.
+The Reservation Service is a critical component of the Hotel Kong Arthur management system, handling all aspects of room reservations. Built with Flask and SQLite, this microservice provides a robust API for managing guest reservations, including creation and retrieval operations. The service integrates with the Room Inventory Service and Guest Service to provide comprehensive reservation management capabilities.
 
 **Key Features:**
-- Create new reservations with validation
-- Retrieve reservation details including guest and room information
-- Handle season-based pricing for reservations
-- API endpoint error handling and response formatting
-- Docker containerization for easy deployment
-- Modular architecture using Flask Blueprints
+- Create and retrieve reservations
+- Integration with Guest and Room Inventory services
+- Season-based pricing calculation
+- Comprehensive error handling
+- Docker containerization
+- Modular Flask architecture
 
 ## Project Structure
 
 ```bash
 ReservationService/
-├── api/                                         # API routes for reservations
-│   └── reservation_routes.py                    # 
-├── csv/                                         
-│   └── international_names_with_rooms_1000.csv  # CSV file containing sample data
-├── database/                                    # Database connection and initialization scripts
-│   ├── connection.py                            
-│   ├── initialization.py                        
-│   └── reservation_inventory.db                 # SQLite database for reservations
-├── repositories/                                # Data access layer for reservation operations
-│   └── reservation_repository.py                
-├── app.py                                       # Main application entry point
-├── Dockerfile                                   # Docker configuration file
-├── requirements.txt                             # Python dependencies
-└── README.md                                    # Project documentation
+├── api/
+│   └── reservation_routes.py          # API endpoints implementation
+├── csv/
+│   └── international_names_with_rooms_1000.csv  # Sample data
+├── database/
+│   ├── connection.py                  # Database connection handler
+│   ├── initialization.py              # Database setup and initialization
+│   └── reservation_inventory.db       # SQLite database
+├── repositories/
+│   └── reservation_repository.py      # Data access layer
+├── app.py                            # Main application entry point
+├── Dockerfile                        # Docker configuration
+├── requirements.txt                  # Python dependencies
+└── README.md                        # Project documentation
 ```
 
 ## Database Schema
+
 ```mermaid
 erDiagram
     Reservations {
@@ -56,67 +56,51 @@ erDiagram
 
 ## API Documentation
 
-| Method | Endpoint                      | Description                                          | Request Body                          | Response (200)                                                      | Error Responses                        |
-|--------|-------------------------------|------------------------------------------------------|---------------------------------------|---------------------------------------------------------------------|----------------------------------------|
-| GET    | /api/v1/reservations          | Get all reservations                                 | N/A                                   | `[{"id": 1, "guest_id": 1, "room_id": 1, ...}]`                  | 404: `{"error": "No reservations found"}` |
-| GET    | /api/v1/reservations/{id}     | Get reservation by ID                               | N/A                                   | `{"id": 1, "guest_id": 1, "room_id": 1, ...}`                     | 404: `{"error": "Reservation not found"}` |
-| POST   | /api/v1/reservations/new      | Create a new reservation                             | `{"guest_id": 1, "room_id": 1, ...}`| `{"message": "Reservation made successfully"}`                     | 400: `{"error": "Missing required fields"}` |
+| Method | Endpoint | Description | Request Body | Response (200) | Error Responses |
+|--------|----------|-------------|--------------|----------------|-----------------|
+| GET | `/api/v1/reservations` | Get all reservations | N/A | `[{"reservation_id": 1, "guest": {...}, "room": {...}, "reservation_details": {...}}]` | 404: `{"error": "No reservations found"}` |
+| GET | `/api/v1/reservations/{id}` | Get reservation by ID | N/A | `{"reservation_id": 1, "guest": {...}, "room": {...}, "reservation_details": {...}}` | 404: `{"error": "Reservation not found"}` |
+| POST | `/api/v1/reservations/new` | Create new reservation | `{"guest_id": 1, "room_id": 1, "start_date": "2024-01-01", "end_date": "2024-01-05"}` | `{"message": "Reservation created successfully"}` | 400: `{"error": "Missing required field(s)"}` |
 
----
+## Environment Variables
 
-## Testing
+The service requires the following environment variables:
 
-### Prerequisites
-- Docker Desktop
-- Python 3.x (for local development)
-- Postman (for testing)
-
-## Installation
-
-### Local Development Setup
 ```bash
+GUEST_SERVICE_URL=http://guest_service:5001
+ROOM_INVENTORY_SERVICE_URL=http://room_inventory_service:5002
+```
+
+## Installation & Setup
+
+### Local Development
+
+```bash
+# Create and activate virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Run the application
 python3 app.py
 ```
 
 ### Docker Setup
+
+1. Create Docker network (if not exists):
 ```bash
-docker build -t guest_service . && docker image prune -f
-docker build -t room_inventory_service . && docker image prune -f
+docker network create microservice-network
+```
+
+2. Build and run the service:
+```bash
+# Build image
 docker build -t reservation_service . && docker image prune -f
-```
 
-docker build -t reservation_service . && docker image prune -f
-docker rm -f reservation_service && docker run -d \
-  -p 5003:5003 \
-  -e GUEST_SERVICE_URL=http://guest_service:5001 \
-  -e ROOM_INVENTORY_SERVICE_URL=http://room_inventory_service:5002 \
-  --name reservation_service \
-  --network microservice-network \
-  reservation_service
-
-
-```bash
-# Run guest_service
+# Run container
 docker run -d \
-  --name guest_service \
-  --network microservice-network \
-  -p 5001:5001 \
-  guest_service
-```
-```bash
-# Run room_inventory_service
-docker run -d \
-  -p 5002:5002 \
-  --name room_inventory_service \
-  --network microservice-network \
-  room_inventory_service
-```
-```bash
-# Run reservation_service
-docker rm -f reservation_service && docker run -d \
   -p 5003:5003 \
   -e GUEST_SERVICE_URL=http://guest_service:5001 \
   -e ROOM_INVENTORY_SERVICE_URL=http://room_inventory_service:5002 \
@@ -124,6 +108,14 @@ docker rm -f reservation_service && docker run -d \
   --network microservice-network \
   reservation_service
 ```
+
+## Testing
+
+### Prerequisites
+- Docker Desktop installed and running
+- Python 3.x (for local development)
+- Postman or similar API testing tool
+
 ## Postman Collection
 You can use the following API endpoints in Postman or any HTTP client to test the application.
 

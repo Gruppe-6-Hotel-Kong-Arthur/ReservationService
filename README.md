@@ -136,7 +136,7 @@ You can use the following API endpoints in Postman or any HTTP client to test th
         "end_date": "2024-11-01",
         "price": 10740.0,
         "start_date": "2024-10-28",
-        "season": MID
+        "season": "MID"
 
     },
     "reservation_id": 1000,
